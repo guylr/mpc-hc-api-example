@@ -70,9 +70,7 @@ class CheckRunning(threading.Thread):
 
 class Listener:
     def __init__(self):
-        self.plr = Player()
         self.mpchc_hwnd = None
-        self.gc = None
 
         #http://stackoverflow.com/a/5257770
         message_map = {win32con.WM_COPYDATA: self.OnCopyData}
@@ -99,10 +97,11 @@ class Listener:
 
     def OnCopyData(self, hwnd, msg, wparam, lparam):
         pCDS = ctypes.cast(lparam, PCOPYDATASTRUCT)
-        print ctypes.wstring_at(pCDS.contents.lpData)
 
         command = hex(pCDS.contents.dwData)
-        self.do_stuff(command, ctypes.wstring_at(pCDS.contents.lpData))
+        data = ctypes.wstring_at(pCDS.contents.lpData)
+        print command, data
+        self.do_stuff(command, data)
 
     def send_message(self, command, message=''):
         """
